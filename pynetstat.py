@@ -22,16 +22,15 @@ tcpstate = ["","CLOSED","LISTEN","SYN_SENT","SYN_RCVD","ESTABLISHED","FIN_WAIT1"
 
 def printConnections(connectionList):
     ''' print out connections, tcp first then udp '''
-    # list to add udp connections to
-    udplist = []
+    # sort by process then by connection type
+    connectionList = sorted(connectionList, key=lambda connection: connection[0]) ## not correct yet
+    connectionList = sorted(connectionList, key=lambda connection: connection[-1])
     for a in connectionList:
-        try:
-            print "%s :: %s:%d --> %s:%d :: %d :: %s" % (a[6],a[0],a[1],a[2],a[3],a[4],tcpstate[a[5]])
-        # udp connections don't have as many fields, so its easy enough to sort this way
-        except IndexError:
-            udplist.append(a)
-    for b in udplist:
-        print "%s :: %s:%d --> *.* :: %d :: LISTENING" % (b[3],b[0],b[1],b[2])
+        if len(a)==7:
+            print "%s :: %d \t:: %s:%d --> %s:%d :: %s" % (a[6],a[0],a[1],a[2],a[3],a[4],tcpstate[a[5]])
+        else:
+            print "%s :: %d \t:: %s:%d --> *.* :: LISTENING" % (a[3],a[0],a[1],a[2],)
+
 
 def main():
     ''' main function to run from direct call from cli '''

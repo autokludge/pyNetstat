@@ -158,7 +158,7 @@ def getOpenPorts():
             pid = socket.ntohs(pid)
             portState = item.dwState
             # add above to connectionList as item
-            connectionList.append([lAddr,lPort,rAddr,rPort,pid,portState, "/TCP"])
+            connectionList.append([pid,lAddr,lPort,rAddr,rPort,portState, "/TCP"])
     else:
         print "Error occurred when trying to retreive TCP table"
         
@@ -236,7 +236,7 @@ def getOpenPorts():
             pid = socket.ntohs(pid)
             
             #add connections to list
-            connectionList.append([lAddr,lPort,pid, "/UDP"])
+            connectionList.append([pid,lAddr,lPort, "/UDP"])
             
     else:
         print "Error occurred while trying to aquire UDP Table"
