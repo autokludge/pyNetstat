@@ -15,7 +15,7 @@ psapi = ctypes.windll.psapi
 kernel = ctypes.windll.kernel32
 
 def getProcesses():
-    ''' get list of process names and ids in form (pid,process name) '''
+    """ get list of process names and ids in form (pid,process name) """
     DWORD = ctypes.c_ulong
     #define symbols that are needed for process access
     PROCESS_QUERY_INFORMATION = 0x0400
@@ -26,7 +26,7 @@ def getProcesses():
     cbNeeded = DWORD(0)
     hModule = DWORD()
     modname = ctypes.c_buffer(30)
-    processList = []
+    processList = {}
     
     # get list of process ids
     psapi.EnumProcesses(ctypes.byref(aProcesses),
@@ -51,7 +51,7 @@ def getProcesses():
             pname = "".join([i for i in modname if i!= '\x00'])
             if pname == "":
                 pname = "System"
-            processList.append([pid,pname])
+            processList[pid]= pname
             
             # Clean up modname in case the next process name isn't as long
             for i in range(modname._length_):
@@ -64,5 +64,5 @@ def getProcesses():
 
 if __name__ == "__main__":
     psl = getProcesses()
-    for ps in psl:
-        print "%d : %s" % (ps[0],ps[1])
+    for pid, name in sorted(psl.items(), key=lambda x: (-1*x[1], x[0])):
+        print "%d : %s" % (pid,name)

@@ -8,6 +8,7 @@ displays local address localport connected to remote address and port
 then the process id accosiated with it and the connection status
 """
 import openPorts
+import pidnames
 
 def getConnections():
     ''' get open connections from iphelperapi '''
@@ -20,22 +21,27 @@ tcpstate = ["","CLOSED","LISTEN","SYN_SENT","SYN_RCVD","ESTABLISHED","FIN_WAIT1"
             "FINWAIT2","CLOSE_WAIT","CLOSING","LAST_ACK","TIME_WAIT","DELETE_TCB"]
 
 
-def printConnections(connectionList):
+def printConnections(connectionList, processList):
     ''' print out connections, tcp first then udp '''
     # sort by process then by connection type
     connectionList = sorted(connectionList, key=lambda connection: connection[0]) ## not correct yet
     connectionList = sorted(connectionList, key=lambda connection: connection[-1])
     for a in connectionList:
+        try:
+            name = "%s (%s)" % (processList[a[0]], a[0])
+        except KeyError:
+            name = str(a[0])
         if len(a)==7:
-            print "%s :: %d \t:: %s:%d --> %s:%d :: %s" % (a[6],a[0],a[1],a[2],a[3],a[4],tcpstate[a[5]])
+            print "%s :: %s \t:: %s:%d --> %s:%d :: %s" % (a[6],name,a[1],a[2],a[3],a[4],tcpstate[a[5]])
         else:
-            print "%s :: %d \t:: %s:%d --> *.* :: LISTENING" % (a[3],a[0],a[1],a[2],)
+            print "%s :: %s \t:: %s:%d --> *.* :: LISTENING" % (a[3],name,a[1],a[2],)
 
 
 def main():
     ''' main function to run from direct call from cli '''
     connections = getConnections()
-    printConnections(connections)
+    processes = pidnames.getProcesses()
+    printConnections(connections, processes)
     
 if __name__ == "__main__":
     main()
