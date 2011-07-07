@@ -155,7 +155,6 @@ def getOpenPorts():
             rAddr = item.dwRemoteAddr
             rAddr = socket.inet_ntoa(struct.pack('L', rAddr))
             pid = item.dwOwningPid
-            pid = socket.ntohs(pid)
             portState = item.dwState
             # add above to connectionList as item
             connectionList.append([pid,lAddr,lPort,rAddr,rPort,portState, "/TCP"])
@@ -233,7 +232,6 @@ def getOpenPorts():
             # format info to local reprs
             lPort = socket.ntohs(lPort)
             lAddr = socket.inet_ntoa(struct.pack('L', lAddr))
-            pid = socket.ntohs(pid)
             
             #add connections to list
             connectionList.append([pid,lAddr,lPort, "/UDP"])
